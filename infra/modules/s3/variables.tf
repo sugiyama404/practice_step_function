@@ -1,3 +1,8 @@
 variable "app_name" {}
 variable "region" {}
-variable "source_dir_name" {}
+data "aws_caller_identity" "self" {}
+data "aws_partition" "current" {}
+locals {
+  account_id = data.aws_caller_identity.self.account_id
+  partition  = data.aws_partition.current.partition
+}

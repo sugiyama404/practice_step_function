@@ -51,3 +51,4 @@ resource "aws_iam_policy" "lambda_policy" {
     ]
   })
 }
+

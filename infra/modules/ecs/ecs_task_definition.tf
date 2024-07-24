@@ -3,8 +3,8 @@ resource "aws_ecs_task_definition" "MainDefinition" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-  execution_role_arn       = var.ecs_iam_role
-  task_role_arn            = var.ecs_iam_role
+  execution_role_arn       = var.iam_role_arn_for_ecs
+  task_role_arn            = var.iam_role_arn_for_ecs
   network_mode             = "awsvpc"
   container_definitions = jsonencode([
     {
