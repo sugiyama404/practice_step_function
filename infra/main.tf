@@ -13,8 +13,9 @@ provider "aws" {
 }
 
 module "iam" {
-  source   = "./modules/iam"
-  app_name = var.app_name
+  source                   = "./modules/iam"
+  app_name                 = var.app_name
+  webserver_log_group_name = var.webserver_log_group_name
 }
 
 # ECR
@@ -58,22 +59,24 @@ module "ecs" {
 }
 
 module "cloudtrail" {
-  source       = "./modules/cloudtrail"
-  app_name     = var.app_name
-  region       = var.region
-  s3_bucket_id = module.s3.s3_bucket_id
+  source                        = "./modules/cloudtrail"
+  app_name                      = var.app_name
+  region                        = var.region
+  s3_bucket_id                  = module.s3.s3_bucket_id
+  ecs_cloudwatch_logs_group_arn = module.ecs.ecs_cloudwatch_logs_group_arn
+  iam_role_arn_for_cloudtrail   = module.iam.iam_role_arn_for_cloudtrail
 }
 
-module "eventbridge" {
-  source                         = "./modules/eventbridge"
-  sfn_ecs_stop_state_machine_arn = module.stepfunction.sfn_ecs_stop_state_machine_arn
-}
+# module "eventbridge" {
+#   source                         = "./modules/eventbridge"
+#   sfn_ecs_stop_state_machine_arn = module.stepfunction.sfn_ecs_stop_state_machine_arn
+# }
 
-module "stepfunction" {
-  source                        = "./modules/stepfunction"
-  iam_role_arn_for_stepfunction = module.iam.iam_role_arn_for_stepfunction
-  ecs_cluster_arn               = module.ecs.ecs_cluster_arn
-}
+# module "stepfunction" {
+#   source                        = "./modules/stepfunction"
+#   iam_role_arn_for_stepfunction = module.iam.iam_role_arn_for_stepfunction
+#   ecs_cluster_arn               = module.ecs.ecs_cluster_arn
+# }
 
 # module "lambda" {
 #   source                             = "./modules/lambda"

@@ -5,13 +5,10 @@ resource "aws_cloudtrail" "main" {
   s3_key_prefix                 = "prefix"
   enable_logging                = true
 
-  event_selector {
-    read_write_type           = "WriteOnly"
-    include_management_events = true
-    data_resource {
-      type   = "AWS::S3::Object"
-      values = ["arn:aws:s3:::${var.s3_bucket_id}/"]
-    }
-  }
+  cloud_watch_logs_group_arn = "${var.ecs_cloudwatch_logs_group_arn}:*"
+  cloud_watch_logs_role_arn  = var.iam_role_arn_for_cloudtrail
 
+  # insight_selector {
+  #   insight_type = "ApiCallRateInsight"
+  # }
 }

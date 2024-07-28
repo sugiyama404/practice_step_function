@@ -32,6 +32,24 @@ resource "aws_iam_policy" "cloudwatch_policy" {
   })
 }
 
+resource "aws_iam_policy" "cloudtrail_policy" {
+  name = "CloudTrail_CloudWatchLogs_Policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:log-group:${var.webserver_log_group_name}:log-stream:*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_policy" "lambda_policy" {
   name = "lambda_policy"
 

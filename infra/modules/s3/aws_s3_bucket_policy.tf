@@ -14,12 +14,7 @@ data "aws_iam_policy_document" "main" {
     }
 
     actions   = ["s3:GetBucketAcl"]
-    resources = [aws_s3_bucket.main.arn]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = ["arn:${local.partition}:cloudtrail:${var.region}:${local.account_id}:trail/*"]
-    }
+    resources = ["arn:aws:s3:::${aws_s3_bucket.main.id}"]
   }
 
   statement {
@@ -38,11 +33,6 @@ data "aws_iam_policy_document" "main" {
       test     = "StringEquals"
       variable = "s3:x-amz-acl"
       values   = ["bucket-owner-full-control"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = ["arn:${local.partition}:cloudtrail:${var.region}:${local.account_id}:trail/example"]
     }
   }
 }

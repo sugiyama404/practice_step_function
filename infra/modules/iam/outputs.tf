@@ -9,3 +9,9 @@ output "iam_role_arn_for_lambda" {
 output "iam_role_arn_for_stepfunction" {
   value = aws_iam_role.step_functions_role.arn
 }
+
+output "iam_role_arn_for_cloudtrail" {
+  value = aws_iam_role.cloudtrail_role.arn
+}
+
+

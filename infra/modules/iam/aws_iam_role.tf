@@ -41,6 +41,23 @@ resource "aws_iam_role" "lambda_role" {
   }
 }
 
+resource "aws_iam_role" "cloudtrail_role" {
+  name = "CloudTrail_CloudWatchLogs_Role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
 # IAM Role for Step Functions
 resource "aws_iam_role" "step_functions_role" {
   name = "stepFunctionsRole"
