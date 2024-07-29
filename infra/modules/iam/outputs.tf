@@ -14,4 +14,7 @@ output "iam_role_arn_for_cloudtrail" {
   value = aws_iam_role.cloudtrail_role.arn
 }
 
+output "iam_role_arn_for_eventbrifge" {
+  value = aws_iam_role.eventbridge_role.arn
+}
 

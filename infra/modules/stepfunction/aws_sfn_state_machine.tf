@@ -10,16 +10,19 @@ resource "aws_sfn_state_machine" "ecs_stop_state_machine" {
   "States": {
     "Wait": {
       "Type": "Wait",
-      "Seconds": 60,
-      "Comment": "60s",
+      "Seconds": 10,
+      "Comment": "10s",
       "Next": "StopTask"
     },
     "StopTask": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::ecs:stopTask.sync",
+      "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
-        "Cluster": "${var.ecs_cluster_arn}",
-        "Task": "$.TaskArn"
+        "FunctionName": "${var.lambda_function_arn}",
+        "Payload": {
+          "Cluster": "${var.ecs_cluster_arn}",
+          "Task": "$.TaskArn"
+        }
       },
       "End": true
     }

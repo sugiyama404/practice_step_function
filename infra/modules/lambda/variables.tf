@@ -7,3 +7,6 @@ locals {
   account_id = data.aws_caller_identity.self.account_id
 }
 variable "cloudwatch_ecs_task_start_rule_arn" {}
+variable "ecs_cluster_arn" {}
+variable "ecs_cluster_name" {}
+variable "ecs_task_arn" {}

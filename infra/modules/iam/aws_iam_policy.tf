@@ -61,7 +61,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents",
-          "sns:Publish"
+          "ecs:StopTask",
         ],
         Resource = "*",
         Effect   = "Allow"
@@ -70,3 +70,34 @@ resource "aws_iam_policy" "lambda_policy" {
   })
 }
 
+resource "aws_iam_policy" "lambda_invoke_policy" {
+  name        = "lambda-invoke-policy"
+  description = "Policy to allow stepFunctionsRole to invoke Lambda functions"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "lambda:InvokeFunction",
+        Resource = "arn:aws:lambda:${var.region}:${local.account_id}:function:lambda_function"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "eventbridge_to_stepfunctions_policy" {
+  name = "EventBridgeToStepFunctionsPolicy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "states:StartExecution"
+        ],
+        Resource = "${var.sfn_ecs_stop_state_machine_arn}"
+      }
+    ]
+  })
+}

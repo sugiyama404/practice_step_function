@@ -6,3 +6,8 @@ variable "app_name" {}
 variable "api_repository_url" {}
 variable "api_port" {}
 variable "webserver_log_group_name" {}
+variable "region" {}
+data "aws_caller_identity" "self" {}
+locals {
+  account_id = data.aws_caller_identity.self.account_id
+}

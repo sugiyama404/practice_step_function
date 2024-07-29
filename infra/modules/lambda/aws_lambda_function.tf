@@ -16,6 +16,14 @@ resource "aws_lambda_function" "main" {
   runtime          = "python3.9"
   depends_on       = [aws_cloudwatch_log_group.lambda]
 
+  environment {
+    variables = {
+      CLUSTER_ARN  = var.ecs_cluster_arn
+      CLUSTER_NAME = var.ecs_cluster_name
+      TASK_ARN     = var.ecs_task_arn
+    }
+  }
+
   tags = {
     Name = "${var.app_name}-lamdba"
   }

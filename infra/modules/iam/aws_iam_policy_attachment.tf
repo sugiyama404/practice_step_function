@@ -26,3 +26,13 @@ resource "aws_iam_role_policy_attachment" "step_functions_policy_attachment" {
   role       = aws_iam_role.step_functions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSStepFunctionsFullAccess"
 }
+
+resource "aws_iam_role_policy_attachment" "step_functions_to_lambda_policy_attachment" {
+  role       = aws_iam_role.step_functions_role.name
+  policy_arn = aws_iam_policy.lambda_invoke_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "eventbridge_to_stepfunctions_policy_attachment" {
+  role       = aws_iam_role.eventbridge_role.name
+  policy_arn = aws_iam_policy.eventbridge_to_stepfunctions_policy.arn
+}

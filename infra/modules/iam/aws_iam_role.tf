@@ -75,3 +75,21 @@ resource "aws_iam_role" "step_functions_role" {
     ]
   })
 }
+
+# IAM Role for EventBridge to Step Functions
+resource "aws_iam_role" "eventbridge_role" {
+  name = "EventBridgeToStepFunctionsRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "events.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}

@@ -13,9 +13,11 @@ provider "aws" {
 }
 
 module "iam" {
-  source                   = "./modules/iam"
-  app_name                 = var.app_name
-  webserver_log_group_name = var.webserver_log_group_name
+  source                         = "./modules/iam"
+  app_name                       = var.app_name
+  webserver_log_group_name       = var.webserver_log_group_name
+  region                         = var.region
+  sfn_ecs_stop_state_machine_arn = module.stepfunction.sfn_ecs_stop_state_machine_arn
 }
 
 # ECR
@@ -56,6 +58,7 @@ module "ecs" {
   api_repository_url          = module.ecr.api_repository_url
   api_port                    = var.api_port
   webserver_log_group_name    = var.webserver_log_group_name
+  region                      = var.region
 }
 
 module "cloudtrail" {
@@ -67,25 +70,30 @@ module "cloudtrail" {
   iam_role_arn_for_cloudtrail   = module.iam.iam_role_arn_for_cloudtrail
 }
 
-# module "eventbridge" {
-#   source                         = "./modules/eventbridge"
-#   sfn_ecs_stop_state_machine_arn = module.stepfunction.sfn_ecs_stop_state_machine_arn
-# }
+module "eventbridge" {
+  source                         = "./modules/eventbridge"
+  sfn_ecs_stop_state_machine_arn = module.stepfunction.sfn_ecs_stop_state_machine_arn
+  iam_role_arn_for_eventbrifge   = module.iam.iam_role_arn_for_eventbrifge
+}
 
-# module "stepfunction" {
-#   source                        = "./modules/stepfunction"
-#   iam_role_arn_for_stepfunction = module.iam.iam_role_arn_for_stepfunction
-#   ecs_cluster_arn               = module.ecs.ecs_cluster_arn
-# }
+module "stepfunction" {
+  source                        = "./modules/stepfunction"
+  iam_role_arn_for_stepfunction = module.iam.iam_role_arn_for_stepfunction
+  ecs_cluster_arn               = module.ecs.ecs_cluster_arn
+  lambda_function_arn           = module.lambda.lambda_function_arn
+}
 
-# module "lambda" {
-#   source                             = "./modules/lambda"
-#   app_name                           = var.app_name
-#   iam_role_arn_for_lambda            = module.iam.iam_role_arn_for_lambda
-#   lambda_function_name               = var.lambda_function_name
-#   region                             = var.region
-#   cloudwatch_ecs_task_start_rule_arn = module.eventbridge.cloudwatch_ecs_task_start_rule_arn
-# }
+module "lambda" {
+  source                             = "./modules/lambda"
+  app_name                           = var.app_name
+  lambda_function_name               = var.lambda_function_name
+  region                             = var.region
+  iam_role_arn_for_lambda            = module.iam.iam_role_arn_for_lambda
+  cloudwatch_ecs_task_start_rule_arn = module.eventbridge.cloudwatch_ecs_task_start_rule_arn
+  ecs_cluster_arn                    = module.ecs.ecs_cluster_arn
+  ecs_cluster_name                   = module.ecs.ecs_cluster_name
+  ecs_task_arn                       = module.ecs.ecs_task_arn
+}
 
 
 
