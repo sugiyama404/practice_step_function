@@ -8,7 +8,4 @@ resource "aws_cloudtrail" "main" {
   cloud_watch_logs_group_arn = "${var.ecs_cloudwatch_logs_group_arn}:*"
   cloud_watch_logs_role_arn  = var.iam_role_arn_for_cloudtrail
 
-  # insight_selector {
-  #   insight_type = "ApiCallRateInsight"
-  # }
 }
